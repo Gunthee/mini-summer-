@@ -4,6 +4,7 @@
     <title>Todo App</title>
 </head>
 <body>
+
     <h1>Simple Todo App</h1>
 
     <form action="/create-todo" method="post">
@@ -19,5 +20,28 @@
             <li>No todos yet!</li>
         {% endfor %}
     </ul>
+
+    
+
+    <h2>Usr List:</h2>
+    <ul>
+        {% for user in users %}
+            <li>{{ user }}</li>
+        {% else %}
+            <li>No users yet!</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Login:</h3>
+        <form action = '/create-user' method="post">
+            <input type="text" name="user" placeholder="Enter username"  required>
+            <button type="submit">Create user</button>
+        </form>
+        <ul>
+
+            
+        </ul>
+
+    
 </body>
 </html>
