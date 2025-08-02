@@ -7,23 +7,14 @@
 
     <h1>Simple Todo App</h1>
 
-    <form action="/create-todo" method="post">
-        <input type="text" name="item" placeholder="Enter a new todo" required>
-        <button type="submit">Add</button>
+    <!-- ——— Create a user ——— -->
+    <h3>Create User:</h3>
+    <form action="/create-user" method="post">
+        <input type="text" name="user" placeholder="Enter username" required>
+        <button type="submit">Create user</button>
     </form>
 
-    <h2>Todo List:</h2>
-    <ul>
-        {% for todo in todos %}
-            <li>{{ todo }}</li>
-        {% else %}
-            <li>No todos yet!</li>
-        {% endfor %}
-    </ul>
-
-    
-
-    <h2>Usr List:</h2>
+    <h2>Users:</h2>
     <ul>
         {% for user in users %}
             <li>{{ user }}</li>
@@ -32,16 +23,59 @@
         {% endfor %}
     </ul>
 
-    <h3>Login:</h3>
-        <form action = '/create-user' method="post">
-            <input type="text" name="user" placeholder="Enter username"  required>
-            <button type="submit">Create user</button>
-        </form>
+    <!-- ——— Add a todo for a given user ——— -->
+    <h3>Add Todo:</h3>
+    <form action="/create-todo" method="post">
+        <select name="username" required>
+            <option value="" disabled selected>Select user</option>
+            {% for user in users %}
+                <option value="{{ user }}">{{ user }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="item" placeholder="Enter a new todo" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- ——— All todos global view ——— -->
+    <h2>All Todos:</h2>
+    {% if todos %}
         <ul>
-
-            
+            {% for todo in todos %}
+                <li>
+                    {{ todo.item }} <em>(owner: {{ todo.owner }})</em>
+                </li>
+            {% endfor %}
         </ul>
+    {% else %}
+        <p>No todos yet!</p>
+    {% endif %}
 
-    
+    <!-- ——— Per-user todo list with delete buttons ——— -->
+    <h2>Todos by User:</h2>
+    {% for user in users %}
+        <h3>{{ user }}’s Todos</h3>
+        {% set counter = 0 %}
+        {% set has_todos = false %}
+        <ul>
+            {% for todo in todos %}
+                {% if todo.owner == user %}
+                    {% set has_todos = true %}
+                    <li>
+                        {{ todo.item }}
+                        <form action="/delete-todo" method="post" style="display:inline">
+                            <input type="hidden" name="username" value="{{ user }}">
+                            <input type="hidden" name="index" value="{{ counter }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </li>
+                    {% set counter = counter + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% if not has_todos %}
+                <li>No todos for this user yet!</li>
+            {% endif %}
+        </ul>
+    {% endfor %}
+
 </body>
 </html>
